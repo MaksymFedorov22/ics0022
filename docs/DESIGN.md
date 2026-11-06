@@ -21,8 +21,8 @@ flowchart LR
     end
 
     subgraph D["Disk (untrusted)"]
-        UF[(users.dat\nusername + Argon2id hash)]
-        VF[(vaults/username.vault\nencrypted vault)]
+        UF[(data/users.dat\nusername + Argon2id hash)]
+        VF[(data/vaults/username.vault\nencrypted vault)]
     end
 
     UM <-->|read/write hashes| ST[Storage layer\nfile I/O, atomic writes]
@@ -62,7 +62,7 @@ flowchart LR
 
 **Encryption:** XChaCha20-Poly1305 AEAD (`crypto_aead_xchacha20poly1305_ietf`), new random 24-byte nonce on every save. The header is passed as associated data, so it is also authenticated.
 
-**Vault file** `vaults/<username>.vault`:
+**Vault file** `data/vaults/<username>.vault`:
 
 | Field | Size |
 |---|---|
@@ -93,9 +93,10 @@ flowchart LR
 |---|---|
 | Vault file stolen | Encrypted with XChaCha20-Poly1305; key never stored |
 | Vault file tampered with | AEAD tag and authenticated header; decryption fails on any change |
+| Tampered KDF limits in header (resource exhaustion) | opslimit/memlimit range-checked before key derivation |
 | Nonce reuse | New random nonce on every save |
 | Corruption from interrupted write | Write to temporary file, then atomic rename |
-| Other local users reading files | File permissions `0600`; separate vault per user, encrypted with that user's key |
+| Other local users reading files | Data directory `0700`, files `0600`; separate vault per user, encrypted with that user's key |
 | Path traversal via username in file name | Username restricted to `[A-Za-z0-9_]{3,32}` |
 
 ### Vault in memory
