@@ -96,6 +96,6 @@ Vault locked.
 
 ## Status
 
-Checkpoint 2: core functionality implemented (register, login, encrypted vault, add/list/get/delete).
+Checkpoint 2: core functionality implemented (register, login, encrypted vault, add/list/get/delete). See the [progress note](docs/Checkpoint%202%20Progress.md).
 
 Planned for Checkpoint 3: `update`, locked memory for secrets (`sodium_malloc`), disabling core dumps, login delay and lockout, auto-lock, clipboard auto-clear, full input validation, structured logging and tests.
